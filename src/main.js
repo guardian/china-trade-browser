@@ -5,54 +5,42 @@ var $ = require('jQuery');
 var tradedata = require('./data/unapioutputchina.json');
 var partners = require('./data/partnerAreas.json');
 var somecountry, countries, tradeflows, places;
+var countrylist = [];
+var trade;
 
-
-function listen (countries){
-$('#go').on('click', function() {
-	$('#list').html('');
-	somecountry	= $('#vox').val();
-	console.log(somecountry);
-	listcountry(countries,somecountry);
-	$('#vox').val = "";
-})};
-
-function showdata (data) {
-	var countries = data.dataset;
-	listen(countries);
+function  Country (wtoid, name, iso, trades){
+	this.wtoid = wtoid;
+	this.name = name;
+	this.iso = iso;
+	this.trades = trades; 	
 };
-	
-function listcountry(countries,somecountry) {	
-	var somecountry = countries.filter(function justsomecountry(d) {
-		return d.ptTitle === somecountry && d.rgDesc === 'Import';
-	});
-	console.log("!",somecountry);
-	somecountry.sort(function(a,b){
-		return b.TradeValue - a.TradeValue;
-	});
-	$.each(somecountry, function (i,c){
-		var item = '<li>' + c.cmdDescE + " (" + c.cmdCode + ") " + c.TradeValue + '</li>';
-		$('#list').append(item);
-	});
-};
-
 
 function listmainitems (tradedata,partners) {
 	tradeflows = tradedata.dataset;
 	places = partners.results;
-	//console.log(places);
-	$.each(places, function (i,p) {
-		
-		var maintrade  = getmaintrade(i,p);
-		console.log(maintrade);
-		if (maintrade !== undefined ) {
-		var item = '<li>' + p.text + " | " + maintrade.pt3ISO + "| " + maintrade.cmdCode + "| " +maintrade.cmdDescE + "| " + " $" + maintrade.TradeValue + '</li>';
-		//console.log(item);
-		$('#mainitems').append(item);
-		} 
-	});
-	}
+		$.each(places, function (i,p) {	
+			p.trades = {};	
+		var maintrades  = getmaintrades(i,p);
+			$.each(maintrades, function (j,t) {
+			if (t !== undefined ) {
+				p.iso = t.pt3ISO;
+			var item = '<li>' + p.text + " | " + t.pt3ISO + "| " + t.cmdCode + "| " + t.cmdDescE + "| " + " $" + t.TradeValue + '</li>';
+			var tradeitem = {
+				"commodity" : t.cmdDescE,
+				"commoditycode" : t.cmdCode,
+				"rank" : j + 1,
+				"dollarvalue" : t.TradeValue
+							}
+			p.trades[j] = tradeitem;
+			$('#mainitems').append(item);
+			}
+			}); 
+		});
+		var	jsonoutput = JSON.stringify(places); 
+		console.log(jsonoutput);
+	};
 	
-function getmaintrade(i,place) {
+function getmaintrades(i,place) {
 	tradeflows = tradedata.dataset;
 	var currentplaceflows = tradeflows.filter(function justcurrentplace(f){
 				return f.ptTitle === place.text && f.rgDesc === 'Import';		
@@ -60,12 +48,12 @@ function getmaintrade(i,place) {
 	currentplaceflows.sort(function(a,b){
 		return b.TradeValue - a.TradeValue;
 	});
-	return currentplaceflows[0];		
+	currentplaceflows = currentplaceflows.slice(0,5);
+	return currentplaceflows;		
 	};
 
 function boot(el) {
 	el.innerHTML = template;
-	showdata(tradedata);
 	listmainitems(tradedata,partners);
 }
 

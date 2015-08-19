@@ -2,16 +2,8 @@
     "more": false,
     "results": [
         {
-            "id": "0",
-            "text": "World"
-        },
-        {
             "id": "4",
             "text": "Afghanistan"
-        },
-        {
-            "id": "472",
-            "text": "Africa CAMEU region, nes"
         },
         {
             "id": "8",
@@ -38,16 +30,8 @@
             "text": "Anguilla"
         },
         {
-            "id": "10",
-            "text": "Antarctica"
-        },
-        {
             "id": "28",
             "text": "Antigua and Barbuda"
-        },
-        {
-            "id": "899",
-            "text": "Areas, nes"
         },
         {
             "id": "32",
@@ -138,14 +122,6 @@
             "text": "Bouvet Island"
         },
         {
-            "id": "80",
-            "text": "Br. Antarctic Terr."
-        },
-        {
-            "id": "86",
-            "text": "Br. Indian Ocean Terr."
-        },
-        {
             "id": "92",
             "text": "Br. Virgin Isds"
         },
@@ -192,10 +168,6 @@
         {
             "id": "124",
             "text": "Canada"
-        },
-        {
-            "id": "129",
-            "text": "Caribbean, nes"
         },
         {
             "id": "136",
