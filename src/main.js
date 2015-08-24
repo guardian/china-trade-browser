@@ -55,7 +55,7 @@ function listmainitems (tradedata,partners) {
 		
 		}
 		});
-		console.log(places);
+		//console.log(places);
 		var	jsonoutput = JSON.stringify(places); 
 		console.log(jsonoutput);
 	};
