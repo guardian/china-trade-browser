@@ -46,6 +46,7 @@ function listmainitems (tradedata,partners) {
 		p.chinaexportsovergdp = stats.chinaexportsovergdp;
 		p.averagevariation = stats.averagevariation;
 		p.continent = stats.continent;
+		p.majorpartner = stats.majorpartner;
 		
 			
 		var geo = getgeo(p);
