@@ -2,6 +2,7 @@
 var getJSON = require('./js/utils/getjson');
 var template = require('./html/base.html');
 var $ = require('jQuery');
+var d3 = require('d3');
 var tradedata = require('./data/unapioutputchina.json');
 var partners = require('./data/partnerAreas.json');
 var fullstats = require('./data/fullstats.json');
@@ -40,7 +41,9 @@ function listmainitems (tradedata,partners) {
 			});
 			
 		stats = getstats(p);
+		//console.log(stats);
 		if (stats !== undefined && p !== undefined) {
+		p.text = stats.country;
 		p.gdp = stats.gdp;
 		p.chinaexports = stats.chinaexports;
 		p.chinaexportsovergdp = stats.chinaexportsovergdp;
@@ -57,11 +60,11 @@ function listmainitems (tradedata,partners) {
 		}
 		});
 		//console.log(places);
+		places = shorterlist(places);
 		var	jsonoutput = JSON.stringify(places); 
 		console.log(jsonoutput);
 	};
-	
-	
+		
 function getgeo(p){
 		//console.log(latlong);
 		var currentgeo = latlong.filter(function findthisgeo(g) {
@@ -114,6 +117,51 @@ function addshortdesc(tradeflows) {
 		});
 	return tradeflows;
 };
+
+
+function shorterlist (places) {
+	
+	
+	var trades=d3.nest()
+				.key(function(d){
+					return d.continent;
+				})
+				.rollup(function(leaves){
+					return leaves.sort(function(a,b){
+						return b.chinaexportsovergdp - a.chinaexportsovergdp;
+					}).slice(0,10);
+				})
+				.entries(places.filter(function(d){
+					return d.chinaexportsovergdp;//d.chinaexportsovergdp<0.00;
+				}));
+
+	//console.log(trades)
+	var new_trades=[];
+	trades.forEach(function(d){
+		new_trades=new_trades.concat(d.values.slice(0,((d.key=="Asia" || d.key=="Europe")?2:10)));
+	})
+	
+	places.filter(function(d){
+		return d.majorpartner;
+	}).forEach(function(c){
+		var fil=new_trades.filter(function(d){
+			return d.iso == c.iso;
+		});
+		if(!fil.length) {
+			new_trades.push(c);
+		}
+	})
+	
+	var SA = places.filter(function(d){
+		return d.iso == "ZAF";	
+	});
+	new_trades.push(SA);
+	//console.log(new_trades);
+	return new_trades;
+	
+	
+}
+
 
 function boot(el) {
 	el.innerHTML = template;
